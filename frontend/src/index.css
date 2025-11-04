@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "One Piece";
+  src: url("./assets/font/OnePieceFont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Global styles */
+body {
+  background-image: url("./assets/blue.jpg");
+  background-size: auto;
+  background-repeat: repeat;
+  background-position: top center;
+  margin: 0;
+}
+
+/* Custom scrollbar utilities using Tailwind's layer system */
+@layer utilities {
+  /* Dropdown menu scrollbar */
+  .scrollbar-dropdown::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  .scrollbar-dropdown::-webkit-scrollbar-track {
+    @apply bg-white/10 rounded;
+  }
+
+  .scrollbar-dropdown::-webkit-scrollbar-thumb {
+    @apply bg-white/40 rounded transition-colors duration-200;
+  }
+
+  .scrollbar-dropdown::-webkit-scrollbar-thumb:hover {
+    @apply bg-white/70;
+  }
+
+  /* Modal text box scrollbar */
+  .scrollbar-modal::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  .scrollbar-modal::-webkit-scrollbar-track {
+    @apply bg-white/10 rounded;
+  }
+
+  .scrollbar-modal::-webkit-scrollbar-thumb {
+    @apply bg-white/40 rounded transition-colors duration-200;
+  }
+
+  .scrollbar-modal::-webkit-scrollbar-thumb:hover {
+    @apply bg-white/70;
+  }
+
+  /* Custom volume slider */
+  .volume-slider {
+    @apply appearance-none w-[120px] max-w-[20vw] cursor-pointer bg-transparent;
+  }
+
+  .volume-slider::-webkit-slider-runnable-track {
+    @apply h-2.5 bg-[#13a4db] border-2 border-[rgba(11,102,138,0.95)] rounded-[30px];
+  }
+
+  .volume-slider::-webkit-slider-thumb {
+    @apply appearance-none w-5 h-5 bg-white border-2 border-[#0dbbff] rounded-full -mt-1.5 cursor-pointer;
+  }
+
+  .volume-slider::-moz-range-track {
+    @apply h-2.5 bg-[#13a4db] border-2 border-[rgba(11,102,138,0.95)] rounded-[30px];
+  }
+
+  .volume-slider::-moz-range-thumb {
+    @apply w-[18px] h-[18px] bg-white border-2 border-[#0dbbff] rounded-full cursor-pointer;
+  }
+}
