@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 // Predefined values to always show (moved outside component to avoid re-creation)
 const allCounterValues = [1000, 2000];
