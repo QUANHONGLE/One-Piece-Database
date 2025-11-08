@@ -74,6 +74,7 @@ function DeckStats({ deck }) {
     });
 
     setAnimatedHeights(animated);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deck]);
 
   return (
