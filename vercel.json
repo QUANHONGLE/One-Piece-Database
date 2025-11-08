@@ -1,21 +1,21 @@
 {
-  "version": 2,
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/build",
-  "builds": [
+  "routes": [
     {
-      "src": "api/*.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/cards",
-      "destination": "/api/cards"
+      "src": "/api/cards",
+      "dest": "/api/cards.py"
     },
     {
-      "source": "/api/sets",
-      "destination": "/api/sets"
+      "src": "/api/sets",
+      "dest": "/api/sets.py"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
