@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 function MultiSelectDropdown({
   label,
@@ -15,13 +15,13 @@ function MultiSelectDropdown({
   const [isClosing, setIsClosing] = useState(false);
   const isOpen = openDropdown === name;
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       setOpenDropdown(null);
       setIsClosing(false);
     }, 200); // Match animation duration
-  };
+  }, [setOpenDropdown]);
 
   useEffect(() => {
     function handleClickOutside(event) {
@@ -33,7 +33,7 @@ function MultiSelectDropdown({
       document.addEventListener("mousedown", handleClickOutside);
     }
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
+  }, [isOpen, handleClose]);
 
   function toggleOption(value) {
     if (selected.includes(value)) {

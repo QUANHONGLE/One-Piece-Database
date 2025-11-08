@@ -1,10 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+
+// Predefined values to always show (moved outside component to avoid re-creation)
+const allCounterValues = [1000, 2000];
+const allCostValues = ["NC", 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const allColorValues = ["Red", "Green", "Blue", "Purple", "Black", "Yellow"];
+const allTypeValues = ["Character", "Event", "Stage"];
 
 function DeckStats({ deck }) {
   const [animatedHeights, setAnimatedHeights] = useState({});
-
-  const leaderCount = deck.filter((c) => c.card_type === "Leader").length;
-  const nonLeaderCount = deck.filter((c) => c.card_type !== "Leader").length;
 
   // Calculate counter stats
   const counterStats = deck.reduce((acc, card) => {
@@ -45,12 +48,6 @@ function DeckStats({ deck }) {
     }
     return acc;
   }, {});
-
-  // Predefined values to always show
-  const allCounterValues = [1000, 2000];
-  const allCostValues = ["NC", 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const allColorValues = ["Red", "Green", "Blue", "Purple", "Black", "Yellow"];
-  const allTypeValues = ["Character", "Event", "Stage"];
 
   // Update bar heights when deck changes
   useEffect(() => {
