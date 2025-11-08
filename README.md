@@ -121,6 +121,31 @@ The application will open at `http://localhost:3000`
 - Responsive design
 - Hover effects and visual feedback
 
+## Deployment
+
+### Deploy to Vercel
+
+1. Install Vercel CLI (optional):
+```bash
+npm install -g vercel
+```
+
+2. Deploy using Vercel CLI:
+```bash
+vercel
+```
+
+Or deploy via GitHub:
+- Push your code to GitHub
+- Import your repository on [Vercel](https://vercel.com)
+- Vercel will automatically detect the configuration from `vercel.json`
+- Click "Deploy"
+
+The application structure is set up with:
+- `api/` folder containing serverless Python functions
+- `vercel.json` for build and routing configuration
+- Environment variables configured for production
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
