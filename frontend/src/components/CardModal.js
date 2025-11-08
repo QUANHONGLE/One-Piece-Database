@@ -1,116 +1,102 @@
+import { useState, useEffect } from "react";
+
 function CardModal({ card, onClose }) {
+  const [isClosing, setIsClosing] = useState(false);
+
+  // Reset closing state when a new card is opened
+  useEffect(() => {
+    setIsClosing(false);
+  }, [card]);
+
   if (!card) return null;
 
-  const highlightKeywords = (text) => {
-    if (!text) return text;
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+    }, 300); // Match animation duration
+  };
 
-    const keywords = [
-      "DON!!",
-      "Counter",
-      "Trigger",
-      "Blocker",
-      "Rush",
-      "Banish",
-      "Double Attack",
+  const highlightKeywords = (text) => {
+    if (!text) return "No card text available.";
+
+    const highlights = [
+      { word: "[Trigger]", bg: "#fff320", color: "black" },
+      { word: "[Rush]", bg: "#e67421", color: "white" },
+      { word: "[Blocker]", bg: "#e67421", color: "white" },
+      { word: "[Banish]", bg: "#e67421", color: "white" },
+      { word: "[Double Attack]", bg: "#e67421", color: "white" },
+      { word: "[Counter]", bg: "#db0409", color: "white" },
+      { word: "[Once Per Turn]", bg: "#db3e59", color: "white" },
+      { word: "[On Play]", bg: "#016fb1", color: "white" },
+      { word: "[When Attacking]", bg: "#016fb1", color: "white" },
+      { word: "[Activate:Main]", bg: "#016fb1", color: "white" },
+      { word: "[Activate: Main]", bg: "#016fb1", color: "white" },
+      { word: "[Your Turn]", bg: "#016fb1", color: "white" },
+      { word: "[On Your Opponent's Attack]", bg: "#016fb1", color: "white" },
+      { word: "[End of Your Turn]", bg: "#016fb1", color: "white" },
+      { word: "[Main]", bg: "#016fb1", color: "white" },
     ];
 
-    let highlightedText = text;
-    keywords.forEach((keyword) => {
-      const regex = new RegExp(`(${keyword})`, "gi");
-      highlightedText = highlightedText.replace(
+    let highlighted = text;
+
+    highlights.forEach(({ word, bg, color }) => {
+      const escapedWord = word.replace(/[[\]]/g, "\\$&");
+      const regex = new RegExp(`${escapedWord}`, "gi");
+
+      highlighted = highlighted.replace(
         regex,
-        '<span class="text-[#13a4db] font-bold">$1</span>'
+        `<span style="background-color:${bg}; color:${color}; font-weight:bold; padding:2px 4px; border-radius:7px;">${word}</span>`
       );
     });
 
-    return highlightedText;
+    return highlighted;
   };
 
   return (
     <div
-      className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
-      onClick={onClose}
+      className={`fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-[200] p-4 overflow-y-auto ${isClosing ? 'animate-fade-out' : 'animate-fade-in'}`}
+      onClick={handleClose}
     >
       <div
-        className="bg-gradient-to-br from-[#1a5f7a] to-[#13a4db] p-6 rounded-2xl max-w-4xl w-11/12 relative shadow-2xl border-4 border-white/20"
+        className={`relative max-w-2xl w-full my-auto flex flex-col items-center gap-4 py-8 ${isClosing ? 'animate-scale-out' : 'animate-scale-in'}`}
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-white text-3xl font-bold hover:text-red-500 transition-colors duration-200"
+          onClick={handleClose}
+          className="absolute -top-4 -right-4 text-3xl font-bold hover:rotate-90 hover:scale-125 transition-all duration-300 z-10 bg-red-400 hover:bg-red-600 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center active:scale-95 text-white"
         >
           ✖
         </button>
 
-        <div className="flex gap-6 items-start">
-          <img
-            src={card.card_image}
-            alt={card.card_name}
-            className="w-80 h-auto rounded-xl shadow-lg border-4 border-white/30"
-          />
+        <img
+          src={card.card_image}
+          alt={card.card_name}
+          className="w-[400px] h-auto rounded-xl shadow-2xl hover:scale-105 transition-transform duration-300"
+        />
 
-          <div className="flex-1 text-white">
-            <h2 className="text-4xl font-one-piece mb-4 [text-shadow:2px_2px_6px_rgba(0,0,0,0.8)]">
-              {card.card_name}
-            </h2>
+        <div className="glass-dark rounded-2xl p-6 w-full text-white border-4 border-white/20 shadow-2xl animate-slide-up">
+          <h2 className="text-3xl font-one-piece mb-4 text-center">
+            {card.card_name}
+          </h2>
 
-            <div className="space-y-3 text-lg">
-              <p>
-                <strong>Card Set ID:</strong> {card.card_set_id}
-              </p>
-              <p>
-                <strong>Type:</strong> {card.card_type}
-              </p>
-              <p>
-                <strong>Color:</strong> {card.card_color}
-              </p>
-              <p>
-                <strong>Rarity:</strong> {card.card_rarity}
-              </p>
-              {card.card_cost && (
-                <p>
-                  <strong>Cost:</strong> {card.card_cost}
-                </p>
-              )}
-              {card.card_power && (
-                <p>
-                  <strong>Power:</strong> {card.card_power}
-                </p>
-              )}
-              {card.card_counter && (
-                <p>
-                  <strong>Counter:</strong> {card.card_counter}
-                </p>
-              )}
-              {card.card_attribute && (
-                <p>
-                  <strong>Attribute:</strong> {card.card_attribute}
-                </p>
-              )}
-              {card.card_effect && (
-                <div>
-                  <strong>Effect:</strong>
-                  <div
-                    className="mt-2 p-3 bg-white/10 rounded-lg max-h-40 overflow-y-auto scrollbar-modal"
-                    dangerouslySetInnerHTML={{
-                      __html: highlightKeywords(card.card_effect),
-                    }}
-                  />
-                </div>
-              )}
-              {card.card_trigger && (
-                <div>
-                  <strong>Trigger:</strong>
-                  <div
-                    className="mt-2 p-3 bg-white/10 rounded-lg max-h-40 overflow-y-auto scrollbar-modal"
-                    dangerouslySetInnerHTML={{
-                      __html: highlightKeywords(card.card_trigger),
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
+          {card.card_text && (
+            <div
+              className="text-base whitespace-pre-line mb-3"
+              dangerouslySetInnerHTML={{
+                __html: highlightKeywords(card.card_text),
+              }}
+            />
+          )}
+
+          {card.sub_types && (
+            <div
+              className="text-base whitespace-pre-line bg-gray-500/50 px-4 py-2 rounded-full inline-block"
+              dangerouslySetInnerHTML={{
+                __html: highlightKeywords(card.sub_types),
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

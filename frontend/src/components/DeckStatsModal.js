@@ -101,16 +101,16 @@ function DeckStatsModal({ deck, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="bg-gradient-to-br from-[#1a5f7a] to-[#13a4db] p-8 rounded-2xl max-w-6xl w-11/12 max-h-[90vh] overflow-y-auto relative shadow-2xl border-4 border-white/20"
+        className="bg-gradient-to-br from-[#1a5f7a] to-[#13a4db] p-8 rounded-2xl max-w-6xl w-11/12 max-h-[90vh] overflow-y-auto relative shadow-2xl border-4 border-white/20 animate-scale-in"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-white text-3xl font-bold hover:text-red-500 transition-colors duration-200 z-10"
+          className="absolute top-4 right-4 text-white text-3xl font-bold hover:text-red-500 hover:rotate-90 hover:scale-125 transition-all duration-300 z-10 active:scale-95"
         >
           ✖
         </button>
@@ -121,7 +121,7 @@ function DeckStatsModal({ deck, onClose }) {
 
         <div className="space-y-8">
           {/* Counter Distribution */}
-          <div className="bg-white/10 p-6 rounded-xl">
+          <div className="glass p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
             <h3 className="text-2xl font-bold text-white mb-4 font-sans">
               Counter Distribution
             </h3>
@@ -156,7 +156,7 @@ function DeckStatsModal({ deck, onClose }) {
           </div>
 
           {/* Cost Distribution */}
-          <div className="bg-white/10 p-6 rounded-xl">
+          <div className="glass p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
             <h3 className="text-2xl font-bold text-white mb-4 font-sans">
               Cost Distribution
             </h3>
@@ -191,7 +191,7 @@ function DeckStatsModal({ deck, onClose }) {
           </div>
 
           {/* Color Distribution */}
-          <div className="bg-white/10 p-6 rounded-xl">
+          <div className="glass p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
             <h3 className="text-2xl font-bold text-white mb-4 font-sans">
               Color Distribution
             </h3>
@@ -226,7 +226,7 @@ function DeckStatsModal({ deck, onClose }) {
           </div>
 
           {/* Type Distribution */}
-          <div className="bg-white/10 p-6 rounded-xl">
+          <div className="glass p-6 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
             <h3 className="text-2xl font-bold text-white mb-4 font-sans">
               Card Type Distribution
             </h3>

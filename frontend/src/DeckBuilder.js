@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import MultiSelectDropdown from "./components/MultiSelectDropdown";
 import DeckStats from "./components/DeckStats";
-import DeckStatsModal from "./components/DeckStatsModal";
 
 export default function DeckBuilder() {
   const [cards, setCards] = useState([]);
@@ -22,7 +21,7 @@ export default function DeckBuilder() {
   const [selectedType, setSelectedType] = useState([]);
   const [selectedSet, setSelectedSet] = useState([]);
   const [selectedCard, setSelectedCard] = useState(null);
-  const [showStatsModal, setShowStatsModal] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   // Fetch cards from API
   useEffect(() => {
@@ -40,9 +39,23 @@ export default function DeckBuilder() {
 
   if (loading) {
     return (
-      <p className="text-center mt-5 font-sans font-bold text-white text-3xl">
-        Loading Cards...
-      </p>
+      <div className="flex h-screen">
+        <div className="w-1/2 flex flex-col p-4 gap-4">
+          <div className="h-16 bg-white/20 backdrop-blur-sm rounded-[40px] animate-pulse"></div>
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,120px))] gap-3 justify-center">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="w-[120px] h-[167px] bg-white/10 backdrop-blur-sm rounded-lg animate-pulse"
+                style={{ animationDelay: `${i * 0.05}s` }}
+              ></div>
+            ))}
+          </div>
+        </div>
+        <div className="w-1/2 bg-black/20 p-4">
+          <div className="h-32 bg-white/10 backdrop-blur-sm rounded-lg animate-pulse"></div>
+        </div>
+      </div>
     );
   }
 
@@ -227,27 +240,32 @@ export default function DeckBuilder() {
   });
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex min-h-[calc(100vh-80px)] max-h-[calc(100vh-80px)] overflow-hidden">
       {/* Left Side - Card Search and Filtering */}
-      <div className="w-1/2 flex flex-col border-r-4 border-white/20">
+      <div className="w-1/2 flex flex-col border-r-4 border-white/20 relative">
+        {/* Hover Preview for Deck Cards */}
+        {hoveredCard && hoveredCard.fromDeck && (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none">
+            <img
+              src={hoveredCard.card_image}
+              alt={hoveredCard.card_name}
+              className="w-[600px] h-auto rounded-xl shadow-2xl border-4 border-white"
+            />
+          </div>
+        )}
         {/* Fixed Filter Section */}
         <div className="flex-shrink-0 p-4 bg-[rgba(26,95,122,1)] shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-          <h2 className="text-white font-one-piece text-4xl mb-4 text-center">
-            Card Database
-          </h2>
-
           {/* Search bar */}
           <input
             type="text"
-            className="block mx-auto mb-5 w-[90%] max-w-[600px] px-4 py-3 text-xl font-sans font-bold rounded-[40px] border-[3px] border-black bg-white transition-all duration-300 ease-in-out hover:bg-[#cecece] hover:scale-[1.03] focus:outline-none focus:shadow-[0px_0px_6px_rgba(0,0,0,0.6)] placeholder:text-black/50"
+            className="block mx-auto mb-5 w-[90%] max-w-[600px] px-4 py-3 text-xl font-sans font-bold rounded-[40px] border-[3px] border-black bg-white transition-all duration-300 ease-in-out hover:bg-[#cecece] hover:scale-[1.03] hover:shadow-[0_8px_25px_rgba(19,164,219,0.4)] focus:outline-none focus:scale-[1.05] focus:shadow-[0px_10px_30px_rgba(19,164,219,0.6)] focus:border-[#13a4db] placeholder:text-black/50"
             placeholder="🔎 Search for card"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
 
           {/* Dropdown filters */}
-          <div className="flex justify-center items-center flex-wrap gap-2.5 mb-4">
-            <div className="flex gap-3 mb-4 flex-wrap justify-center">
+          <div className="flex justify-center items-center gap-2 mb-4">
             <MultiSelectDropdown
               label="Set"
               name="set"
@@ -311,36 +329,38 @@ export default function DeckBuilder() {
               setSelected={setSelectedCounters}
             />
           </div>
-          </div>
         </div>
 
         {/* Scrollable Cards Section */}
         <div ref={cardsContainerRef} className="flex-1 overflow-y-auto p-4">
           {/* Cards grid */}
-          <div className="grid grid-cols-[repeat(auto-fill,minmax(180px,180px))] gap-4 p-2 justify-center">
-            {filteredCards.map((card) => (
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(120px,120px))] gap-3 p-2 justify-center">
+            {filteredCards.map((card, index) => (
               <div
                 key={card.card_set_id}
-                className="bg-transparent border-transparent rounded-[10px] shadow-[0px_2px_6px_rgba(0,0,0,0.1)] overflow-hidden p-2 flex flex-col items-center animate-appear transition-all duration-200 ease cursor-pointer opacity-0 translate-y-5 hover:scale-105 hover:shadow-[0px_4px_12px_rgba(0,0,0,0.4)] w-[180px]"
+                className="group bg-transparent border-transparent rounded-[10px] shadow-[0px_2px_6px_rgba(0,0,0,0.1)] overflow-hidden p-1 flex flex-col items-center animate-appear transition-all duration-300 ease-out cursor-pointer opacity-0 translate-y-5 hover:shadow-[0px_10px_30px_rgba(19,164,219,0.5)] hover:scale-110 hover:-translate-y-2 w-[120px] transform-gpu"
                 onClick={() => addCardToDeck(card)}
+                onMouseEnter={() => setHoveredCard(card)}
+                onMouseLeave={() => setHoveredCard(null)}
                 title="Click to add to deck"
+                style={{ animationDelay: `${index * 0.01}s` }}
               >
                 {card.card_image ? (
                   <img
                     src={card.card_image}
                     alt={card.card_name}
-                    className="w-[180px] h-[250px] object-contain"
+                    className="w-[120px] h-[167px] object-contain transition-all duration-300 group-hover:scale-105 rounded-lg"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="w-full aspect-[3/4] bg-black text-white flex flex-col justify-center items-center text-center p-2 rounded-lg gap-1 font-sans text-[clamp(0.6rem,0.8vw,0.8rem)] leading-tight overflow-hidden">
+                  <div className="w-full aspect-[3/4] bg-black text-white flex flex-col justify-center items-center text-center p-2 rounded-lg gap-1 font-sans text-[0.5rem] leading-tight overflow-hidden">
                     <strong
-                      className="text-[clamp(0.8rem,1vw,1rem)] whitespace-nowrap overflow-hidden text-ellipsis max-w-[95%]"
+                      className="text-[0.6rem] whitespace-nowrap overflow-hidden text-ellipsis max-w-[95%]"
                       title={card.card_name}
                     >
                       {card.card_name || "Unnamed Card"}
                     </strong>
-                    <div className="flex-1 flex flex-col justify-center gap-0.5 w-full text-[0.7rem]">
+                    <div className="flex-1 flex flex-col justify-center gap-0.5 w-full text-[0.5rem]">
                       <span>
                         <strong>Type:</strong> {card.card_type ?? "—"}
                       </span>
@@ -371,10 +391,21 @@ export default function DeckBuilder() {
       </div>
 
       {/* Right Side - Deck Display */}
-      <div className="w-1/2 flex flex-col bg-black/20">
+      <div className="w-1/2 flex flex-col bg-black/20 relative">
+        {/* Hover Preview for Search Cards */}
+        {hoveredCard && !hoveredCard.fromDeck && (
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 pointer-events-none">
+            <img
+              src={hoveredCard.card_image}
+              alt={hoveredCard.card_name}
+              className="w-[500px] h-auto rounded-xl shadow-2xl"
+            />
+          </div>
+        )}
+
         {/* Fixed Stats Section */}
         <div className="flex-shrink-0">
-          <DeckStats deck={deck} onOpenStats={() => setShowStatsModal(true)} />
+          <DeckStats deck={deck} />
         </div>
 
         {/* Scrollable Deck Section */}
@@ -398,25 +429,27 @@ export default function DeckBuilder() {
               return (
                 <div
                   key={card.card_set_id}
-                  className="relative cursor-pointer hover:scale-105 transition-all duration-200 w-[180px]"
+                  className="group relative cursor-pointer hover:scale-110 hover:-translate-y-2 hover:rotate-2 transition-all duration-300 ease-out w-[180px] transform-gpu"
                   onClick={() => removeCardFromDeck(card.card_set_id)}
+                  onMouseEnter={() => setHoveredCard({ ...card, fromDeck: true })}
+                  onMouseLeave={() => setHoveredCard(null)}
                   title={`Click to remove one copy (${count} in deck)`}
                 >
                   {/* Stacked card effect - show shadows for multiple copies */}
                   {count > 1 && (
                     <>
-                      <div className="absolute top-1 left-1 w-full h-full bg-white/20 rounded-[10px] border-2 border-white/30 -z-10"></div>
+                      <div className="absolute top-1 left-1 w-full h-full bg-white/20 rounded-[10px] -z-10"></div>
                       {count > 2 && (
-                        <div className="absolute top-2 left-2 w-full h-full bg-white/10 rounded-[10px] border-2 border-white/20 -z-20"></div>
+                        <div className="absolute top-2 left-2 w-full h-full bg-white/10 rounded-[10px] -z-20"></div>
                       )}
                       {count > 3 && (
-                        <div className="absolute top-3 left-3 w-full h-full bg-white/5 rounded-[10px] border-2 border-white/10 -z-30"></div>
+                        <div className="absolute top-3 left-3 w-full h-full bg-white/5 rounded-[10px] -z-30"></div>
                       )}
                     </>
                   )}
 
                   {/* Main card display */}
-                  <div className={`relative bg-transparent border-2 ${isLeader ? 'border-yellow-400 shadow-[0px_0px_12px_rgba(250,204,21,0.6)]' : 'border-white/30'} rounded-[10px] shadow-[0px_2px_6px_rgba(0,0,0,0.3)] overflow-hidden p-2 flex flex-col items-center hover:border-red-500 hover:shadow-[0px_4px_12px_rgba(255,0,0,0.6)]`}>
+                  <div className={`relative bg-transparent rounded-[10px] shadow-[0px_2px_6px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col items-center transition-all duration-300 ${isLeader ? 'shadow-[0px_0px_12px_rgba(250,204,21,0.6)] animate-pulse-glow' : ''} group-hover:shadow-[0px_10px_25px_rgba(255,0,0,0.6)]`}>
                     {/* Card count badge */}
                     <div className="absolute top-2 right-2 bg-black text-white font-bold rounded-full w-8 h-8 flex items-center justify-center text-lg shadow-lg border-2 border-white z-10">
                       {count}
@@ -426,7 +459,7 @@ export default function DeckBuilder() {
                       <img
                         src={card.card_image}
                         alt={card.card_name}
-                        className="w-[180px] h-[250px] object-contain"
+                        className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 rounded-[10px]"
                         loading="lazy"
                       />
                     ) : (
@@ -468,7 +501,7 @@ export default function DeckBuilder() {
             <div className="flex justify-center mt-6">
               <button
                 onClick={() => setDeck([])}
-                className="bg-red-600 hover:bg-red-700 text-white font-one-piece text-2xl px-8 py-3 rounded-[30px] transition-all duration-300 ease-in-out hover:scale-105 shadow-lg"
+                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-one-piece text-2xl px-8 py-3 rounded-[30px] transition-all duration-300 ease-in-out hover:scale-110 hover:shadow-[0_10px_30px_rgba(220,38,38,0.6)] active:scale-95 shadow-lg"
               >
                 Clear Deck
               </button>
@@ -564,11 +597,6 @@ export default function DeckBuilder() {
             </div>
           </div>
         </div>
-      )}
-
-      {/* Stats Modal */}
-      {showStatsModal && (
-        <DeckStatsModal deck={deck} onClose={() => setShowStatsModal(false)} />
       )}
     </div>
   );

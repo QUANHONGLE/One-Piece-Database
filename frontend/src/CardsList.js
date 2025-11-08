@@ -36,9 +36,18 @@ export default function CardsList() {
 
   if (loading) {
     return (
-      <p className="text-center mt-5 font-sans font-bold text-white text-3xl">
-        Loading Cards...
-      </p>
+      <div className="p-4">
+        <div className="block mx-auto mb-5 w-[80%] max-w-[700px] h-16 bg-white/20 backdrop-blur-sm rounded-[40px] animate-pulse"></div>
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 p-4">
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={i}
+              className="bg-white/10 backdrop-blur-sm rounded-[10px] h-[300px] animate-pulse"
+              style={{ animationDelay: `${i * 0.1}s` }}
+            ></div>
+          ))}
+        </div>
+      </div>
     );
   }
 
@@ -129,7 +138,7 @@ export default function CardsList() {
       {/* Search bar */}
       <input
         type="text"
-        className="block mx-auto mb-5 w-[80%] max-w-[700px] px-5 py-4 text-2xl font-sans font-bold rounded-[40px] border-[3px] border-black bg-white transition-all duration-300 ease-in-out hover:bg-[#cecece] hover:scale-[1.03] focus:outline-none focus:shadow-[0px_0px_6px_rgba(0,0,0,0.6)] placeholder:text-black/50"
+        className="block mx-auto mb-5 w-[80%] max-w-[700px] px-5 py-4 text-2xl font-sans font-bold rounded-[40px] border-[3px] border-black bg-white transition-all duration-300 ease-in-out hover:bg-[#cecece] hover:scale-[1.03] hover:shadow-[0_8px_25px_rgba(19,164,219,0.4)] focus:outline-none focus:scale-[1.05] focus:shadow-[0px_10px_30px_rgba(19,164,219,0.6)] focus:border-[#13a4db] placeholder:text-black/50 animate-slide-down"
         placeholder="🔎 Search for card"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
@@ -205,14 +214,20 @@ export default function CardsList() {
 
       {/* Cards grid */}
       <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4 p-4">
-        {filteredCards.map((card) => (
+        {filteredCards.map((card, index) => (
           <div
             key={card.card_set_id}
-            className="bg-transparent border-transparent rounded-[10px] shadow-[0px_2px_6px_rgba(0,0,0,0.1)] overflow-hidden p-2.5 flex flex-col items-center animate-appear transition-all duration-200 ease cursor-pointer opacity-0 translate-y-5 hover:scale-105 hover:shadow-[0px_4px_12px_rgba(0,0,0,0.4)]"
+            className="group bg-transparent border-transparent rounded-[10px] shadow-[0px_2px_6px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col items-center animate-appear transition-all duration-300 ease-out cursor-pointer opacity-0 translate-y-5 hover:scale-110 hover:shadow-[0px_10px_30px_rgba(19,164,219,0.5)] hover:-translate-y-2 hover:rotate-1 transform-gpu"
             onClick={() => setSelectedCard(card)}
+            style={{ animationDelay: `${index * 0.02}s` }}
           >
             {card.card_image ? (
-              <img src={card.card_image} alt={card.card_name} className="max-w-full h-auto object-contain" loading="lazy" />
+              <img
+                src={card.card_image}
+                alt={card.card_name}
+                className="w-full h-full object-cover transition-all duration-300 group-hover:scale-105 rounded-[10px]"
+                loading="lazy"
+              />
             ) : (
               <div className="w-full aspect-[3/4] bg-black text-white flex flex-col justify-center items-center text-center p-2 rounded-lg gap-1 font-sans text-[clamp(0.7rem,1vw,1rem)] leading-tight overflow-hidden">
                 <strong

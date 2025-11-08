@@ -56,7 +56,7 @@ function MultiSelectDropdown({
             setOpenDropdown(name);
           }
         }}
-        className="bg-[#13a4db] text-white flex items-center justify-center p-[clamp(4px,1vw,10px)] px-[clamp(8px,2vw,20px)] w-full text-[clamp(0.8rem,1.2vw,1.2rem)] font-sans font-bold border-2 border-[#0dbbff] rounded-[30px] cursor-pointer transition-all duration-200 ease-in-out hover:bg-[#26769669] hover:scale-[1.03] focus:outline-none focus:shadow-[0px_0px_6px_rgba(0,0,0,0.6)] overflow-hidden"
+        className="bg-gradient-to-r from-[#13a4db] to-[#1a9cc7] text-white flex items-center justify-center p-[clamp(4px,1vw,10px)] px-[clamp(8px,2vw,20px)] w-full text-[clamp(0.8rem,1.2vw,1.2rem)] font-sans font-bold border-2 border-[#0dbbff] rounded-[30px] cursor-pointer transition-all duration-300 ease-in-out hover:shadow-[0_8px_20px_rgba(19,164,219,0.4)] hover:scale-110 hover:-translate-y-1 focus:outline-none focus:shadow-[0px_0px_6px_rgba(0,0,0,0.6)] overflow-hidden active:scale-95"
       >
         <span className="truncate block w-full text-center">{label} {selected.length > 0 ? `(${selected.length})` : ""}</span>
       </button>
@@ -76,10 +76,10 @@ function MultiSelectDropdown({
               return (
                 <div
                   key={opt}
-                  className={`w-full text-sm cursor-pointer text-white font-bold p-1.5 px-2.5 rounded transition-all duration-200 ease ${
+                  className={`w-full text-sm cursor-pointer text-white font-bold p-1.5 px-2.5 rounded transition-all duration-300 ease ${
                     isSelected
-                      ? "bg-[#0dbbff] text-black"
-                      : "hover:bg-white/20 hover:scale-[1.02]"
+                      ? "bg-gradient-to-r from-[#0dbbff] to-[#13a4db] text-black scale-105 shadow-md"
+                      : "hover:bg-white/20 hover:scale-105 hover:translate-x-1"
                   }`}
                   onClick={() => toggleOption(value)}
                 >
