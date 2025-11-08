@@ -1,24 +1,33 @@
-from flask import Flask, jsonify
+from http.server import BaseHTTPRequestHandler
 import sqlite3
+import json
 import os
 
-app = Flask(__name__)
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        # Database path
+        db_path = os.path.join(os.path.dirname(__file__), '..', 'backend', 'onepiece_cards.db')
 
-def get_db_connection():
-    # Database path - Vercel will need this in the root or api folder
-    db_path = os.path.join(os.path.dirname(__file__), '..', 'backend', 'onepiece_cards.db')
-    dbConn = sqlite3.connect(db_path)
-    dbConn.row_factory = sqlite3.Row
-    return dbConn
+        try:
+            # Connect to database
+            dbConn = sqlite3.connect(db_path)
+            dbConn.row_factory = sqlite3.Row
 
-@app.route("/api/sets")
-def get_sets():
-    dbConn = get_db_connection()
-    sets = dbConn.execute("SELECT * from sets").fetchall()
-    dbConn.close()
-    return jsonify([dict(set) for set in sets])
+            # Fetch sets
+            sets = dbConn.execute("SELECT * from sets").fetchall()
+            dbConn.close()
 
-# Vercel serverless function handler
-def handler(request):
-    with app.app_context():
-        return get_sets()
+            # Convert to JSON
+            sets_list = [dict(s) for s in sets]
+
+            # Send response
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps(sets_list).encode())
+        except Exception as e:
+            self.send_response(500)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({"error": str(e)}).encode())
